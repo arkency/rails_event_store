@@ -9,41 +9,6 @@ module AggregateRoot
     let(:stream_name) { "Order$#{uuid}" }
     let(:repository)  { AggregateRoot::Repository.new(event_store) }
 
-    def with_default_event_store(store)
-      previous = AggregateRoot.configuration.default_event_store
-      AggregateRoot.configure { |config| config.default_event_store = store }
-      yield
-      AggregateRoot.configure { |config| config.default_event_store = previous }
-    end
-
-    describe "#initialize" do
-      it "should use default client if event_store not provided" do
-        with_default_event_store(event_store) do
-          repository = AggregateRoot::Repository.new
-
-          order = repository.load(Order.new(uuid), stream_name)
-          order_created = Orders::Events::OrderCreated.new
-          order.apply(order_created)
-          repository.store(order, stream_name)
-
-          expect(event_store.read.stream(stream_name).to_a).to eq [order_created]
-        end
-      end
-
-      it "should prefer provided event_store client" do
-        with_default_event_store(double(:event_store)) do
-          repository = AggregateRoot::Repository.new(event_store)
-
-          order = repository.load(Order.new(uuid), stream_name)
-          order_created = Orders::Events::OrderCreated.new
-          order.apply(order_created)
-          repository.store(order, stream_name)
-
-          expect(event_store.read.stream(stream_name).to_a).to eq [order_created]
-        end
-      end
-    end
-
     describe "#load" do
       specify do
         event_store.publish(Orders::Events::OrderCreated.new, stream_name: stream_name)
