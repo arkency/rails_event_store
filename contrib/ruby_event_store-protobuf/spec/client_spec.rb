@@ -4,7 +4,7 @@ require 'json'
 
 module RubyEventStore
   RSpec.describe Client do
-    let(:client) { RubyEventStore::Client.new(repository: InMemoryRepository.new, mapper: Mappers::NullMapper.new, correlation_id_generator: correlation_id_generator) }
+    let(:client) { RubyEventStore::Client.new(repository: InMemoryRepository.new, correlation_id_generator: correlation_id_generator) }
     let(:stream) { SecureRandom.uuid }
     let(:correlation_id) { SecureRandom.uuid }
     let(:correlation_id_generator) { ->{ correlation_id } }

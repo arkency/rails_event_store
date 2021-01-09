@@ -64,7 +64,7 @@ end
 module RubyEventStore
   ::RSpec.shared_examples :event_repository do
     let(:helper)        { EventRepositoryHelper.new }
-    let(:specification) { Specification.new(SpecificationReader.new(repository, Mappers::NullMapper.new)) }
+    let(:specification) { Specification.new(SpecificationReader.new(repository, Mappers::Default.new)) }
     let(:global_stream) { Stream.new(GLOBAL_STREAM) }
     let(:stream)        { Stream.new(SecureRandom.uuid) }
     let(:stream_flow)   { Stream.new('flow') }

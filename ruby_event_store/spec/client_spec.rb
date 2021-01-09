@@ -4,7 +4,7 @@ require 'json'
 
 module RubyEventStore
   RSpec.describe Client do
-    let(:client) { RubyEventStore::Client.new(repository: InMemoryRepository.new, mapper: Mappers::NullMapper.new, correlation_id_generator: correlation_id_generator) }
+    let(:client) { RubyEventStore::Client.new(repository: InMemoryRepository.new, correlation_id_generator: correlation_id_generator) }
     let(:stream) { SecureRandom.uuid }
     let(:correlation_id) { SecureRandom.uuid }
     let(:correlation_id_generator) { ->{ correlation_id } }
@@ -885,7 +885,6 @@ module RubyEventStore
           Subscriptions.new(event_type_resolver: ->(klass) { klass.event_type })
         client = RubyEventStore::Client.new(
           repository: InMemoryRepository.new,
-          mapper: Mappers::NullMapper.new,
           subscriptions: subscriptions,
         )
         client.subscribe(handler = Proc.new {}, to: [event_klass])
@@ -905,7 +904,6 @@ module RubyEventStore
 
       client = RubyEventStore::Client.new(
         repository: InMemoryRepository.new(serializer: serializer),
-        mapper: Mappers::NullMapper.new,
         dispatcher: RubyEventStore::ImmediateAsyncDispatcher.new(
           scheduler: ScheduledWithSerialization.new(serializer: serializer)
         )
@@ -926,7 +924,6 @@ module RubyEventStore
 
       client = RubyEventStore::Client.new(
         repository: InMemoryRepository.new(serializer: serializer_1),
-        mapper: Mappers::NullMapper.new,
         dispatcher: RubyEventStore::ImmediateAsyncDispatcher.new(
           scheduler: ScheduledWithSerialization.new(serializer: serializer_2)
         )

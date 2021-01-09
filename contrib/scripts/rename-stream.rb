@@ -10,7 +10,6 @@ require 'ruby_event_store'
 
 event_store = RubyEventStore::Client.new(
   repository: RubyEventStore::InMemoryRepository.new,
-  mapper: RubyEventStore::Mappers::NullMapper.new
 )
 
 class StreamSwitch

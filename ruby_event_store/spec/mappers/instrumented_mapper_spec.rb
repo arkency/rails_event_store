@@ -10,7 +10,7 @@ module RubyEventStore
       describe "#event_to_record" do
         specify "wraps around original implementation" do
           domain_event, record = Object.new, Object.new
-          some_mapper = instance_double(RubyEventStore::Mappers::NullMapper)
+          some_mapper = instance_double(RubyEventStore::Mappers::Default)
           allow(some_mapper).to receive(:event_to_record).with(domain_event).and_return(record)
           instrumented_mapper = InstrumentedMapper.new(some_mapper, ActiveSupport::Notifications)
 
@@ -31,7 +31,7 @@ module RubyEventStore
       describe "#record_to_event" do
         specify "wraps around original implementation" do
           domain_event, record = Object.new, Object.new
-          some_mapper = instance_double(RubyEventStore::Mappers::NullMapper)
+          some_mapper = instance_double(RubyEventStore::Mappers::Default)
           allow(some_mapper).to receive(:record_to_event).with(record).and_return(domain_event)
           instrumented_mapper = InstrumentedMapper.new(some_mapper, ActiveSupport::Notifications)
 

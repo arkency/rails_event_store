@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe AggregateRoot do
-  let(:event_store) { RubyEventStore::Client.new(repository: RubyEventStore::InMemoryRepository.new, mapper: RubyEventStore::Mappers::NullMapper.new) }
+  let(:event_store) { RubyEventStore::Client.new(repository: RubyEventStore::InMemoryRepository.new) }
   let(:uuid)        { SecureRandom.uuid }
 
   it "should have ability to apply event on itself" do

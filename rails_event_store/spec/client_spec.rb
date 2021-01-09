@@ -61,7 +61,6 @@ module RailsEventStore
     specify 'wraps mapper into instrumentation' do
       client = Client.new(
         repository: InMemoryRepository.new,
-        mapper: RubyEventStore::Mappers::NullMapper.new
       )
 
       received_notifications = 0

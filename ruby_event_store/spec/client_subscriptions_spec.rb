@@ -23,7 +23,7 @@ end
 module RubyEventStore
   RSpec.describe Client do
     let(:repository) { InMemoryRepository.new }
-    let(:mapper)     { RubyEventStore::Mappers::NullMapper.new }
+    let(:mapper)     { RubyEventStore::Mappers::Default.new }
     let(:client)     { RubyEventStore::Client.new(repository: repository, mapper: mapper) }
 
     specify 'throws exception if subscriber is not defined' do

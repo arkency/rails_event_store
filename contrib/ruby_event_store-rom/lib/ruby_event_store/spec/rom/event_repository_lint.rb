@@ -23,7 +23,7 @@ module RubyEventStore
       let(:rom_helper)     { raise "provide rom_helper instance" }
       let(:env)            { rom_helper.env }
       let(:rom_container)  { env.rom_container }
-      let(:specification)  { Specification.new(SpecificationReader.new(repository, ::RubyEventStore::Mappers::NullMapper.new)) }
+      let(:specification)  { Specification.new(SpecificationReader.new(repository, ::RubyEventStore::Mappers::Default.new)) }
 
       specify '#initialize requires ROM::Env' do
         expect { EventRepository.new(rom: nil, serializer: serializer) }.to raise_error do |err|

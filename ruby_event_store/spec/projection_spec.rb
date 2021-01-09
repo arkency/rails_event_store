@@ -9,7 +9,7 @@ module RubyEventStore
     MoneyInvested    = Class.new(RubyEventStore::Event)
 
     let(:event_store) { RubyEventStore::Client.new(repository: repository, mapper: mapper) }
-    let(:mapper)      { Mappers::NullMapper.new }
+    let(:mapper)      { Mappers::Default.new }
     let(:repository)  { InMemoryRepository.new }
     let(:stream_name) { "Customer$123" }
 

@@ -58,7 +58,6 @@ RSpec.configure do |c|
   c.around(:each)
     Rails.configuration.event_store = RailsEventStore::Client.new(
       repository: RubyEventStore::InMemoryRepository.new,
-      mapper: RubyEventStore::Mappers::NullMapper.new,
     )
     # add subscribers here
   end

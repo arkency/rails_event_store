@@ -855,7 +855,7 @@ module RubyEventStore
     end
 
     let(:repository)    { InMemoryRepository.new }
-    let(:mapper)        { Mappers::NullMapper.new }
+    let(:mapper)        { Mappers::Default.new }
     let(:reader)        { SpecificationReader.new(repository, mapper) }
     let(:specification) { Specification.new(reader) }
     let(:event_id)      { SecureRandom.uuid }

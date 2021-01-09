@@ -20,10 +20,10 @@ module RubyEventStore
         ExpectedVersion.none
       )
 
-      expect(repository.read(Specification.new(SpecificationReader.new(repository, Mappers::NullMapper.new)).result))
+      expect(repository.read(Specification.new(SpecificationReader.new(repository, Mappers::Default.new)).result))
         .to(contains_ids(%w[fbce0b3d-40e3-4d1d-90a1-901f1ded5a4a a1b49edb-7636-416f-874a-88f94b859bef]))
 
-      expect(repository.read(Specification.new(SpecificationReader.new(repository, Mappers::NullMapper.new)).stream('all').result))
+      expect(repository.read(Specification.new(SpecificationReader.new(repository, Mappers::Default.new)).stream('all').result))
         .to(contains_ids(%w[fbce0b3d-40e3-4d1d-90a1-901f1ded5a4a]))
     end
 

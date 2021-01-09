@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module AggregateRoot
   RSpec.describe Repository do
-    let(:event_store) { RubyEventStore::Client.new(repository: RubyEventStore::InMemoryRepository.new, mapper: RubyEventStore::Mappers::NullMapper.new) }
+    let(:event_store) { RubyEventStore::Client.new(repository: RubyEventStore::InMemoryRepository.new) }
     let(:uuid)        { SecureRandom.uuid }
     let(:stream_name) { "Order$#{uuid}" }
     let(:repository)  { AggregateRoot::Repository.new(event_store) }

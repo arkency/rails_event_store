@@ -48,7 +48,7 @@ module RailsEventStoreActiveRecord
       RubyEventStore::Specification.new(
         RubyEventStore::SpecificationReader.new(
           repository,
-          RubyEventStore::Mappers::NullMapper.new
+          RubyEventStore::Mappers::Default.new
         )
       )
     end
@@ -363,7 +363,7 @@ module RailsEventStoreActiveRecord
         RubyEventStore::Stream.new(RubyEventStore::GLOBAL_STREAM),
         RubyEventStore::ExpectedVersion.any
       )
-      reader = RubyEventStore::SpecificationReader.new(repository, RubyEventStore::Mappers::NullMapper.new)
+      reader = RubyEventStore::SpecificationReader.new(repository, RubyEventStore::Mappers::Default.new)
       specification = RubyEventStore::Specification.new(reader)
       read_event = repository.read(specification.result).first
       expect(read_event).to eq(event)
