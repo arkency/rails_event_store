@@ -44,20 +44,6 @@ module RubyEventStore
         expect(event.metadata[:valid_at]).to  eq(time)
       end
 
-      specify '#record_to_event its using events class remapping' do
-        subject = described_class.new(events_class_remapping: {'EventNameBeforeRefactor' => 'SomethingHappened'})
-        record = Record.new(
-          event_id:   domain_event.event_id,
-          data:       { some_attribute: 5 },
-          metadata:   { some_meta: 1 },
-          event_type: "EventNameBeforeRefactor",
-          timestamp:  time,
-          valid_at:   time,
-        )
-        event = subject.record_to_event(record)
-        expect(event).to eq(domain_event)
-      end
-
       specify 'metadata keys are symbolized' do
         record = Record.new(
           event_id:   domain_event.event_id,

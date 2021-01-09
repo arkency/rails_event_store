@@ -289,29 +289,5 @@ module RubyEventStore
 
       expect(state).to eq({})
     end
-
-    specify "supports event class remapping" do
-      event_store = RubyEventStore::Client.new(
-        repository: repository,
-        mapper: Mappers::Default.new(events_class_remapping: { MoneyInvested.to_s => MoneyLost.to_s })
-      )
-      event_store.append(MoneyInvested.new(data: { amount: 1 }))
-
-      balance =
-        Projection
-          .from_all_streams
-          .init( -> { { total: 0 } })
-          .when(MoneyLost, ->(state, event) { state[:total] -= event.data[:amount] })
-          .run(event_store)
-      expect(balance).to eq(total: 0)
-
-      balance =
-        Projection
-          .from_all_streams
-          .init( -> { { total: 0 } })
-          .when([MoneyLost, MoneyInvested], ->(state, event) { state[:total] -= event.data[:amount] })
-          .run(event_store)
-      expect(balance).to eq(total: -1)
-    end
   end
 end

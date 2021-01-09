@@ -3,7 +3,7 @@
 module RubyEventStore
   module Mappers
     class JSONMapper < Default
-      def initialize(events_class_remapping: {})
+      def initialize
         warn <<~EOW
           Please replace RubyEventStore::Mappers::JSONMapper with RubyEventStore::Mappers::Default
 

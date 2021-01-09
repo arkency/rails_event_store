@@ -3,9 +3,8 @@
 module RubyEventStore
   module Mappers
     class Default < PipelineMapper
-      def initialize(events_class_remapping: {})
+      def initialize
         super(Pipeline.new(
-          Transformation::EventClassRemapper.new(events_class_remapping),
           Transformation::SymbolizeMetadataKeys.new,
         ))
       end
