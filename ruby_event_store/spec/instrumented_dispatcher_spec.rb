@@ -22,7 +22,7 @@ module RubyEventStore
 
       specify "instruments" do
         instrumented_dispatcher = InstrumentedDispatcher.new(spy, ActiveSupport::Notifications)
-        subscribe_to("call.dispatcher.rails_event_store") do |notification_calls|
+        subscribe_to("call.dispatcher.ruby_event_store") do |notification_calls|
           event = Object.new
           record = Object.new
           subscriber = -> { }

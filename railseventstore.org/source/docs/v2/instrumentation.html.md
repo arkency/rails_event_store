@@ -59,7 +59,7 @@ The `rails_event_store` gem is integrated with `ActiveSupport::Notifications` th
 You can start [subscribing](https://guides.rubyonrails.org/active_support_instrumentation.html#subscribing-to-an-event) to the instrumentation hooks by now:
 
 ```ruby
-hook_name = "append_to_stream.repository.rails_event_store"
+hook_name = "append_to_stream.repository.ruby_event_store"
 
 ActiveSupport::Notifications.subscribe(hook_name) do |name, start, finish, id, payload|
   metric = ActiveSupport::Notifications::Event.new(name, start, finish, id, payload)
@@ -71,22 +71,22 @@ The aggregate root repository instrumentation is not enabled automaticly here. T
 
 ## Hooks and their payloads
 
-#### append_to_stream.repository.rails_event_store
+#### append_to_stream.repository.ruby_event_store
 
 | Key     | Value |
 | ------- | ----- |
-| :events | An array of appended [RubyEventStore::Record](https://www.rubydoc.info/gems/ruby_event_store/RubyEventStore/Record) objects |
+| :records | An array of appended [RubyEventStore::Record](https://www.rubydoc.info/gems/ruby_event_store/RubyEventStore/Record) objects |
 | :stream | A [RubyEventStore::Stream](https://www.rubydoc.info/gems/ruby_event_store/RubyEventStore/Stream) that we append events to |
 
 ```ruby
 {
-  events: [#<RubyEventStore::Record:0x0000000104b51f30>],
+  records: [#<RubyEventStore::Record:0x0000000104b51f30>],
   stream: #<RubyEventStore::Stream:0x0000000106cbf578>
 }
 ```
 
 
-#### link_to_stream.repository.rails_event_store
+#### link_to_stream.repository.ruby_event_store
 
 | Key        | Value |
 | ---------- | ----- |
@@ -102,7 +102,7 @@ The aggregate root repository instrumentation is not enabled automaticly here. T
 ```
 
 
-#### delete_stream.repository.rails_event_store
+#### delete_stream.repository.ruby_event_store
 
 | Key     | Value |
 | ------- | ----- |
@@ -115,7 +115,7 @@ The aggregate root repository instrumentation is not enabled automaticly here. T
 ```
 
 
-#### read.repository.rails_event_store
+#### read.repository.ruby_event_store
 
 | Key            | Value |
 | -------------- | ----- |
@@ -128,7 +128,7 @@ The aggregate root repository instrumentation is not enabled automaticly here. T
 ```
 
 
-#### count.repository.rails_event_store
+#### count.repository.ruby_event_store
 
 | Key            | Value |
 | -------------- | ----- |
@@ -141,20 +141,20 @@ The aggregate root repository instrumentation is not enabled automaticly here. T
 ```
 
 
-#### update_messages.repository.rails_event_store
+#### update_messages.repository.ruby_event_store
 
 | Key            | Value |
 | -------------- | ----- |
-| :messages      | An array of [RubyEventStore::Record](https://www.rubydoc.info/gems/ruby_event_store/RubyEventStore/Record) objects to replace existing ones of the same identifiers |
+| :records      | An array of [RubyEventStore::Record](https://www.rubydoc.info/gems/ruby_event_store/RubyEventStore/Record) objects to replace existing ones of the same identifiers |
 
 ```ruby
 {
-  messages: [#<RubyEventStore::Record:0x0000000109e4ff98]
+  records: [#<RubyEventStore::Record:0x0000000109e4ff98]
 }
 ```
 
 
-#### streams_of.repository.rails_event_store
+#### streams_of.repository.ruby_event_store
 
 | Key            | Value |
 | -------------- | ----- |
@@ -167,7 +167,7 @@ The aggregate root repository instrumentation is not enabled automaticly here. T
 ```
 
 
-#### call.dispatcher.rails_event_store
+#### call.dispatcher.ruby_event_store
 
 | Key         | Value |
 | ----------- | ----- |
@@ -182,11 +182,11 @@ The aggregate root repository instrumentation is not enabled automaticly here. T
 ```
 
 
-#### serialize.mapper.rails_event_store
+#### event_to_record.mapper.ruby_event_store
 
 | Key         | Value |
 | ----------- | ----- |
-| :domain_event | An event instance which is being mapped into RubyEventStore::Record |
+| :event | An event instance which is being mapped into RubyEventStore::Record |
 
 ```ruby
 {
@@ -194,7 +194,7 @@ The aggregate root repository instrumentation is not enabled automaticly here. T
 }
 ```
 
-#### deserialize.mapper.rails_event_store
+#### record_to_event.mapper.ruby_event_store
 
 | Key         | Value |
 | ----------- | ----- |

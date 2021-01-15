@@ -2,7 +2,7 @@ require "measure/version"
 
 module Measure
   METRICS = [
-    /rails_event_store/,
+    /ruby_event_store/,
     /aggregate_root/,
     "total"
   ].freeze

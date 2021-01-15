@@ -49,7 +49,7 @@ module RailsEventStore
       client = Client.new(repository: InMemoryRepository.new)
 
       received_notifications = 0
-      ActiveSupport::Notifications.subscribe("append_to_stream.repository.rails_event_store") do
+      ActiveSupport::Notifications.subscribe("append_to_stream.repository.ruby_event_store") do
         received_notifications += 1
       end
 
@@ -65,7 +65,7 @@ module RailsEventStore
       )
 
       received_notifications = 0
-      ActiveSupport::Notifications.subscribe("serialize.mapper.rails_event_store") do
+      ActiveSupport::Notifications.subscribe("event_to_record.mapper.ruby_event_store") do
         received_notifications += 1
       end
 

@@ -8,7 +8,7 @@ module RubyEventStore
     end
 
     def call(subscriber, event, record)
-      instrumentation.instrument("call.dispatcher.rails_event_store", event: event, subscriber: subscriber) do
+      instrumentation.instrument("call.dispatcher.ruby_event_store", event: event, subscriber: subscriber) do
         dispatcher.call(subscriber, event, record)
       end
     end
