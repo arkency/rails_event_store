@@ -218,6 +218,13 @@ module RailsEventStore
       end
     end
 
+    specify "#inspect" do
+      scheduler = CustomScheduler.new
+      dispatcher = AfterCommitAsyncDispatcher.new(scheduler: scheduler)
+      object_id = dispatcher.object_id.to_s(16)
+      expect(dispatcher.inspect).to eq("#<RailsEventStore::AfterCommitAsyncDispatcher:0x#{object_id} scheduler=#{scheduler.inspect}>")
+    end
+
     def expect_no_enqueued_job(job)
       raise unless block_given?
       yield

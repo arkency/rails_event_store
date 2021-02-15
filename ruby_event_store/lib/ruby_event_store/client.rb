@@ -297,7 +297,12 @@ module RubyEventStore
     end
 
     def inspect
-      "#<#{self.class}:0x#{__id__.to_s(16)}>"
+      <<~EOS.strip
+        #<#{self.class}:0x#{__id__.to_s(16)}>
+          - repository: #{repository.inspect}
+          - dispatcher: #{broker.dispatcher.inspect}
+          - mapper: #{mapper.inspect}
+      EOS
     end
 
     EMPTY_HASH = {}.freeze

@@ -13,5 +13,9 @@ module RubyEventStore
     def verify(subscriber)
       @scheduler.verify(subscriber)
     end
+
+    def inspect
+      "#<#{self.class}:0x#{__id__.to_s(16)} scheduler=#{@scheduler.inspect}>"
+    end
   end
 end

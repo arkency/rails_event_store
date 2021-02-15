@@ -99,6 +99,10 @@ module RubyEventStore
         @stream_entries.streams_of(event_id)
                        .map { |name| Stream.new(name) }
       end
+
+      def inspect
+        "#<#{self.class}:0x#{__id__.to_s(16)}>"
+      end
     end
   end
 end

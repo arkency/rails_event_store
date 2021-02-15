@@ -55,6 +55,10 @@ module RubyEventStore
           )
         end
 
+        def inspect
+          "#<#{self.class}:0x#{__id__.to_s(16)} serializer=#{serializer.inspect} key_repository=#{key_repository.inspect}>"
+        end
+
         private
         attr_reader :key_repository, :serializer, :forgotten_data
 

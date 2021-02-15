@@ -39,6 +39,12 @@ module RubyEventStore
           expect(result).to eq(record)
           expect(result.metadata.keys.map(&:class).uniq).to eq([String])
         end
+
+        specify "#inspect" do
+          transformation = StringifyMetadataKeys.new
+          object_id = transformation.object_id.to_s(16)
+          expect(transformation.inspect).to eq("#<RubyEventStore::Mappers::Transformation::StringifyMetadataKeys:0x#{object_id}>")
+        end
       end
     end
   end

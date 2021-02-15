@@ -458,6 +458,12 @@ module RailsEventStoreActiveRecord
       time.round(RubyEventStore::TIMESTAMP_PRECISION)
     end
 
+    specify "#inspect" do
+      repository = EventRepository.new
+      object_id = repository.object_id.to_s(16)
+      expect(repository.inspect).to eq("#<RailsEventStoreActiveRecord::EventRepository:0x#{object_id}>")
+    end
+
     def cleanup_concurrency_test
       ActiveRecord::Base.connection_pool.disconnect!
     end

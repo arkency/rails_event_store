@@ -17,6 +17,10 @@ module RubyEventStore
       dispatcher.verify(subscriber)
     end
 
+    def inspect
+      "#<#{self.class}:0x#{__id__.to_s(16)} dispatcher=#{@dispatcher.inspect}>"
+    end
+
     private
     attr_reader :instrumentation, :dispatcher
   end

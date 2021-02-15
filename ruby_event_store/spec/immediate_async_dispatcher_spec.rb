@@ -47,5 +47,11 @@ module RubyEventStore
         expect(dispatcher.verify(handler)).to eq(false)
       end
     end
+
+    specify "#inspect" do
+      dispatcher = ImmediateAsyncDispatcher.new(scheduler: scheduler)
+      object_id = dispatcher.object_id.to_s(16)
+      expect(dispatcher.inspect).to eq("#<RubyEventStore::ImmediateAsyncDispatcher:0x#{object_id} scheduler=#{scheduler.inspect}>")
+    end
   end
 end

@@ -12,6 +12,10 @@ module RubyEventStore
           symbolize(record)
         end
 
+        def inspect
+          "#<#{self.class}:0x#{__id__.to_s(16)}>"
+        end
+
         private
         def symbolize(record)
           Record.new(

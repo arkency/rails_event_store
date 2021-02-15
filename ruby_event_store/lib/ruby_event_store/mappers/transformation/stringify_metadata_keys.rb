@@ -12,6 +12,10 @@ module RubyEventStore
           stringify(record)
         end
 
+        def inspect
+          "#<#{self.class}:0x#{__id__.to_s(16)}>"
+        end
+
         private
         def stringify(record)
           Record.new(

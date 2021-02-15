@@ -97,5 +97,13 @@ module RubyEventStore
         expect(real2.called).to be_falsey
       end
     end
+
+    specify "#inspect" do
+      dispatcher1 = spy
+      dispatcher2 = real_dispatcher.new
+      composed_dispatcher = ComposedDispatcher.new(dispatcher1, dispatcher2)
+      object_id = composed_dispatcher.object_id.to_s(16)
+      expect(composed_dispatcher.inspect).to eq("#<RubyEventStore::ComposedDispatcher:0x#{object_id} dispatchers=[#{dispatcher1.inspect}, #{dispatcher2.inspect}]>")
+    end
   end
 end

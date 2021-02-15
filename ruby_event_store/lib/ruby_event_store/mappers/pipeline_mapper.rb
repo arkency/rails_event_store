@@ -15,6 +15,10 @@ module RubyEventStore
         pipeline.load(record)
       end
 
+      def inspect
+        "#<#{self.class}:0x#{__id__.to_s(16)} transformations=#{pipeline.transformations.inspect}>"
+      end
+
       private
       attr_reader :pipeline
     end

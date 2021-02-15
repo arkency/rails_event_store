@@ -57,6 +57,10 @@ module RubyEventStore
       end
     end
 
+    def inspect
+      "#<#{self.class}:0x#{__id__.to_s(16)} inner_repository=#{repository.inspect}>"
+    end
+
     private
     attr_reader :repository, :instrumentation
   end

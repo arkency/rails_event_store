@@ -20,5 +20,9 @@ module RubyEventStore
         dispatcher.verify(subscriber)
       end
     end
+
+    def inspect
+      "#<#{self.class}:0x#{__id__.to_s(16)} dispatchers=#{@dispatchers.inspect}>"
+    end
   end
 end

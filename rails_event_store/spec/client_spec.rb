@@ -75,9 +75,9 @@ module RailsEventStore
     end
 
     specify "#inspect" do
-      client    = Client.new
+      client = Client.new
       object_id = client.object_id.to_s(16)
-      expect(client.inspect).to eq("#<RailsEventStore::Client:0x#{object_id}>")
+      expect(client.inspect).to start_with("#<RailsEventStore::Client:0x#{object_id}>")
     end
 
     specify do

@@ -47,5 +47,11 @@ module RubyEventStore
         )
       end.to raise_error(RubyEventStore::EventDuplicatedInStream)
     end
+
+    specify "#inspect" do
+      repository = InMemoryRepository.new
+      object_id = repository.object_id.to_s(16)
+      expect(repository.inspect).to eq("#<RubyEventStore::InMemoryRepository:0x#{object_id}>")
+    end
   end
 end

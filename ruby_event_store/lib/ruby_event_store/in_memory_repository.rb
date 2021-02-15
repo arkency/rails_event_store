@@ -102,6 +102,10 @@ module RubyEventStore
         .map    { |name,| Stream.new(name) }
     end
 
+    def inspect
+      "#<#{self.class}:0x#{__id__.to_s(16)}>"
+    end
+
     private
     def read_scope(spec)
       serialized_records = serialized_records_of_stream(spec.stream)

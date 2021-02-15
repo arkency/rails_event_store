@@ -48,6 +48,13 @@ module RubyEventStore
       end
     end
 
+    specify "#inspect" do
+      some_dispatcher = spy
+      dispatcher = InstrumentedDispatcher.new(some_dispatcher, ActiveSupport::Notifications)
+      object_id = dispatcher.object_id.to_s(16)
+      expect(dispatcher.inspect).to eq("#<RubyEventStore::InstrumentedDispatcher:0x#{object_id} dispatcher=#{some_dispatcher.inspect}>")
+    end
+
     def subscribe_to(name)
       received_payloads = []
       callback = ->(_name, _start, _finish, _id, payload) { received_payloads << payload }

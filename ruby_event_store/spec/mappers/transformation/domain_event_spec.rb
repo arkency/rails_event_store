@@ -36,6 +36,12 @@ module RubyEventStore
           expect(loaded).to eq(event)
           expect(loaded.metadata.to_h).to eq(event.metadata.to_h)
         end
+
+        specify "#inspect" do
+          transformation = DomainEvent.new
+          object_id = transformation.object_id.to_s(16)
+          expect(transformation.inspect).to eq("#<RubyEventStore::Mappers::Transformation::DomainEvent:0x#{object_id}>")
+        end
       end
     end
   end

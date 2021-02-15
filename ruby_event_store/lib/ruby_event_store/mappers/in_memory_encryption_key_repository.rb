@@ -22,6 +22,10 @@ module RubyEventStore
         @keys = @keys.reject { |(id, _)| id.eql?(identifier) }
       end
 
+      def inspect
+        "#<#{self.class}:0x#{__id__.to_s(16)}>"
+      end
+
       private
 
       def prepare_encrypt(cipher)

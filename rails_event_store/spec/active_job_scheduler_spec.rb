@@ -79,6 +79,12 @@ module RailsEventStore
       end
     end
 
+    specify "#inspect" do
+      scheduler = ActiveJobScheduler.new
+      object_id = scheduler.object_id.to_s(16)
+      expect(scheduler.inspect).to eq("#<RailsEventStore::ActiveJobScheduler:0x#{object_id}>")
+    end
+
     class MyAsyncHandler < ActiveJob::Base
       @@received = nil
       def self.reset
