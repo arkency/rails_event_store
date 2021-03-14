@@ -27,7 +27,7 @@ $verbose = ENV.has_key?('VERBOSE') ? true : false
 ActiveJob::Base.logger = nil unless $verbose
 ActiveRecord::Schema.verbose = $verbose
 
-DummyEvent = Class.new(RailsEventStore::Event)
+DummyEvent = Class.new(RubyEventStore::Event)
 
 module GeneratorHelper
   def dummy_app_name

@@ -25,7 +25,7 @@ module RailsEventStore
     it_behaves_like :scheduler, ActiveJobScheduler.new(serializer: YAML)
     it_behaves_like :scheduler, ActiveJobScheduler.new(serializer: RubyEventStore::NULL)
 
-    let(:event)  { TimeEnrichment.with(Event.new(event_id: "83c3187f-84f6-4da7-8206-73af5aca7cc8"), timestamp: Time.utc(2019, 9, 30)) }
+    let(:event)  { TimeEnrichment.with(RubyEventStore::Event.new(event_id: "83c3187f-84f6-4da7-8206-73af5aca7cc8"), timestamp: Time.utc(2019, 9, 30)) }
     let(:record) { RubyEventStore::Mappers::Default.new.event_to_record(event) }
 
     describe "#verify" do

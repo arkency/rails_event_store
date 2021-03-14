@@ -100,7 +100,7 @@ module RailsEventStore
 
       HandlerWithDefaults.event = nil
       event_store.subscribe_to_all_events(HandlerWithDefaults)
-      event_store.publish(ev = RailsEventStore::Event.new)
+      event_store.publish(ev = RubyEventStore::Event.new)
       wait_until{ HandlerWithDefaults.event }
       expect(HandlerWithDefaults.event).to eq(ev)
     end
@@ -111,7 +111,7 @@ module RailsEventStore
 
       HandlerWithAnotherEventStore.event = nil
       event_store.subscribe_to_all_events(HandlerWithAnotherEventStore)
-      event_store.publish(ev = RailsEventStore::Event.new)
+      event_store.publish(ev = RubyEventStore::Event.new)
       wait_until{ HandlerWithAnotherEventStore.event }
       expect(HandlerWithAnotherEventStore.event).to eq(ev)
     end
@@ -122,7 +122,7 @@ module RailsEventStore
 
       HandlerWithSpecifiedSerializer.event = nil
       json_event_store.subscribe_to_all_events(HandlerWithSpecifiedSerializer)
-      json_event_store.publish(ev = RailsEventStore::Event.new)
+      json_event_store.publish(ev = RubyEventStore::Event.new)
       wait_until{ HandlerWithSpecifiedSerializer.event }
       expect(HandlerWithSpecifiedSerializer.event).to eq(ev)
     end
@@ -130,7 +130,7 @@ module RailsEventStore
     specify 'default dispatcher can into ActiveJob' do
       MyLovelyAsyncHandler.event = nil
       event_store.subscribe_to_all_events(MyLovelyAsyncHandler)
-      event_store.publish(ev = RailsEventStore::Event.new)
+      event_store.publish(ev = RubyEventStore::Event.new)
       wait_until{ MyLovelyAsyncHandler.event }
       expect(MyLovelyAsyncHandler.event).to eq(ev)
     end
@@ -139,7 +139,7 @@ module RailsEventStore
       HandlerWithHelper.prepend RailsEventStore::AsyncHandler
       HandlerWithHelper.event = nil
       event_store.subscribe_to_all_events(HandlerWithHelper)
-      event_store.publish(ev = RailsEventStore::Event.new)
+      event_store.publish(ev = RubyEventStore::Event.new)
       wait_until{ HandlerWithHelper.event }
       expect(HandlerWithHelper.event).to eq(ev)
     end
@@ -150,7 +150,7 @@ module RailsEventStore
       HandlerA.prepend RailsEventStore::AsyncHandler
       HandlerA.metadata = nil
       event_store.subscribe_to_all_events(HandlerA)
-      event_store.publish(ev = RailsEventStore::Event.new)
+      event_store.publish(ev = RubyEventStore::Event.new)
       wait_until{ HandlerA.metadata }
       expect(HandlerA.metadata).to eq({
         correlation_id: ev.correlation_id,
@@ -164,7 +164,7 @@ module RailsEventStore
       HandlerB.prepend RailsEventStore::AsyncHandler
       HandlerB.metadata = nil
       event_store.subscribe_to_all_events(HandlerB)
-      event_store.publish(ev = RailsEventStore::Event.new(
+      event_store.publish(ev = RubyEventStore::Event.new(
         metadata: {
           correlation_id: "COID",
           causation_id:   "CAID",
@@ -179,7 +179,7 @@ module RailsEventStore
 
     specify 'ActiveJob with sidekiq adapter that requires serialization', mutant: false do
       ActiveJob::Base.queue_adapter = :sidekiq
-      ev = RailsEventStore::Event.new
+      ev = RubyEventStore::Event.new
       Sidekiq::Testing.fake! do
         MyLovelyAsyncHandler.event = nil
         event_store.subscribe_to_all_events(MyLovelyAsyncHandler)
@@ -193,7 +193,7 @@ module RailsEventStore
       event_store = RailsEventStore::Client.new(
         dispatcher: RubyEventStore::ImmediateAsyncDispatcher.new(scheduler: CustomSidekiqScheduler.new)
       )
-      ev = RailsEventStore::Event.new
+      ev = RubyEventStore::Event.new
       Sidekiq::Testing.fake! do
         SidekiqHandlerWithHelper.prepend RailsEventStore::AsyncHandler.with(serializer: YAML)
         SidekiqHandlerWithHelper.event = nil
@@ -209,7 +209,7 @@ module RailsEventStore
       HandlerB.prepend RailsEventStore::CorrelatedHandler
       HandlerB.prepend RailsEventStore::AsyncHandler
       HandlerB.metadata = nil
-      event_store.append(ev = RailsEventStore::Event.new)
+      event_store.append(ev = RubyEventStore::Event.new)
       ev = event_store.read.event(ev.event_id)
       HandlerB.perform_now(serialize_without_correlation_id(ev))
       expect(HandlerB.metadata).to eq({

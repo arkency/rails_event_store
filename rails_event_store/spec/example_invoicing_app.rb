@@ -1,10 +1,10 @@
-class OrderCreated < RailsEventStore::Event
+class OrderCreated < RubyEventStore::Event
 end
 
-class ProductAdded < RailsEventStore::Event
+class ProductAdded < RubyEventStore::Event
 end
 
-class PriceChanged < RailsEventStore::Event
+class PriceChanged < RubyEventStore::Event
 end
 
 class InvoiceReadModel
