@@ -6,4 +6,5 @@ module RubyEventStore
 end
 
 require_relative 'persistent_projections/version'
+require_relative 'persistent_projections/global_updater'
 require_relative 'persistent_projections/consumer'
