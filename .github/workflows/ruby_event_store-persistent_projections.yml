@@ -20,6 +20,14 @@ jobs:
       WORKING_DIRECTORY: contrib/ruby_event_store-persistent_projections
       BUNDLE_GEMFILE: ${{ matrix.gemfile }}
       DATABASE_URL: ${{ matrix.database }}
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_DATABASE: rails_event_store
+          MYSQL_ROOT_PASSWORD: secret
+        ports:
+          - 3306:3306
     strategy:
       fail-fast: false
       matrix:
@@ -27,19 +35,19 @@ jobs:
           - ruby: ruby-3.0
             gemfile: Gemfile
             os: ubuntu-20.04
-            database: sqlite3:db.sqlite3
+            database: mysql2://root:secret@127.0.0.1/rails_event_store
           - ruby: ruby-2.7
             gemfile: Gemfile
             os: ubuntu-20.04
-            database: sqlite3:db.sqlite3
+            database: mysql2://root:secret@127.0.0.1/rails_event_store
           - ruby: ruby-2.6
             gemfile: Gemfile
             os: ubuntu-20.04
-            database: sqlite3:db.sqlite3
+            database: mysql2://root:secret@127.0.0.1/rails_event_store
           - ruby: ruby-2.5
             gemfile: Gemfile
             os: ubuntu-20.04
-            database: sqlite3:db.sqlite3
+            database: mysql2://root:secret@127.0.0.1/rails_event_store
     steps:
       - uses: actions/checkout@v2
       - run: test -e ${{ matrix.gemfile }}.lock
@@ -58,6 +66,7 @@ jobs:
       WORKING_DIRECTORY: contrib/ruby_event_store-persistent_projections
       BUNDLE_GEMFILE: ${{ matrix.gemfile }}
       DATABASE_URL: ${{ matrix.database }}
+      MUTANT_JOBS: 1
     strategy:
       fail-fast: false
       matrix:
@@ -65,7 +74,7 @@ jobs:
           - ruby: ruby-2.7
             gemfile: Gemfile
             os: ubuntu-20.04
-            database: "sqlite3::memory:"
+            database: mysql2://root:secret@127.0.0.1/rails_event_store
     steps:
       - uses: actions/checkout@v2
         with:
