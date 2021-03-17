@@ -26,13 +26,20 @@ module RubyEventStore
       end
 
       def run
-        while !@gracefully_shutting_down do
-          was_something_changed = @global_updater.one_loop
-          if !was_something_changed
-            STDOUT.flush
-            sleep SLEEP_TIME_WHEN_NOTHING_TO_DO
+        global_updater_thread = Thread.new do
+          while !@gracefully_shutting_down do
+            was_something_changed = @global_updater.one_loop
+            if !was_something_changed
+              STDOUT.flush
+              sleep SLEEP_TIME_WHEN_NOTHING_TO_DO
+            end
           end
         end
+        while !@gracefully_shutting_down do
+          sleep 1
+        end
+        logger.info "Waiting for threads to finish"
+        [global_updater_thread].map(&:join)
         logger.info "Gracefully shutting down"
       end
 
