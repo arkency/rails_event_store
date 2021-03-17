@@ -31,7 +31,7 @@ module RubyEventStore
       end
 
       def global_status
-        ProjectionStatus.find_by(name: "$")
+        ProjectionStatus.find_by(name: Consumer::GLOBAL_POSITION_NAME)
       end
     end
   end

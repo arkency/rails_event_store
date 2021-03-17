@@ -13,6 +13,7 @@ module RubyEventStore
 
     class Consumer
       SLEEP_TIME_WHEN_NOTHING_TO_DO = 0.1
+      GLOBAL_POSITION_NAME = "$"
 
       def initialize(consumer_uuid, require_file, clock: Time, logger:)
         @clock = clock
@@ -44,12 +45,12 @@ module RubyEventStore
       def one_loop
         last_id = Event.order("id DESC").first&.id || 0
         current_status = begin
-          ProjectionStatus.find_by!(name: "$")
+          ProjectionStatus.find_by!(name: GLOBAL_POSITION_NAME)
         rescue ActiveRecord::RecordNotFound
           begin
-            ProjectionStatus.create!(name: "$", position: 0)
+            ProjectionStatus.create!(name: GLOBAL_POSITION_NAME, position: 0)
           rescue ActiveRecord::RecordNotUnique
-            ProjectionStatus.find_by(name: "$")
+            ProjectionStatus.find_by(name: GLOBAL_POSITION_NAME)
           end
         end
         return false if last_id == current_status.position
@@ -58,10 +59,10 @@ module RubyEventStore
           Event.transaction do
             ProjectionStatus.connection.execute("SELECT id FROM event_store_events WHERE id = #{next_position} FOR UPDATE")
           end
-          ProjectionStatus.connection.execute("UPDATE event_store_projections SET position = GREATEST(#{next_position}, position) WHERE name = '$'")
+          ProjectionStatus.connection.execute("UPDATE event_store_projections SET position = GREATEST(#{next_position}, position) WHERE name = '#{GLOBAL_POSITION_NAME}'")
           logger.debug "Progressed to at least #{next_position}"
         rescue ActiveRecord::RecordNotFound
-          ProjectionStatus.connection.execute("UPDATE event_store_projections SET position = GREATEST(#{next_position}, position) WHERE name = '$'")
+          ProjectionStatus.connection.execute("UPDATE event_store_projections SET position = GREATEST(#{next_position}, position) WHERE name = '#{GLOBAL_POSITION_NAME}'")
           logger.debug "Progressed to at least #{next_position}"
         rescue ActiveRecord::LockWaitTimeout
           logger.debug "Lock wait timeout"
