@@ -19,7 +19,9 @@ module RubyEventStore
       end
 
       def init
-        ActiveRecord::Base.connection.execute("SET SESSION innodb_lock_wait_timeout = 1;")
+        if ActiveRecord::Base.connection.adapter_name == "Mysql2"
+          ActiveRecord::Base.connection.execute("SET SESSION innodb_lock_wait_timeout = 1;")
+        end
       end
 
       def one_loop
