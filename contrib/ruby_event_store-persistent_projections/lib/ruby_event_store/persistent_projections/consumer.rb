@@ -14,7 +14,7 @@ module RubyEventStore
     class Consumer
       SLEEP_TIME_WHEN_NOTHING_TO_DO = 0.1
 
-      def initialize(consumer_uuid, database_url, clock: Time, logger:)
+      def initialize(consumer_uuid, require_file, clock: Time, logger:)
         @clock = clock
         @logger = logger
         @consumer_uuid = consumer_uuid
@@ -22,12 +22,11 @@ module RubyEventStore
         @gracefully_shutting_down = false
         prepare_traps
 
-        @database_url = database_url
+        require require_file unless require_file.nil?
       end
 
       def init
         logger.info("Initiated RubyEventStore::PersistentProjections v#{VERSION}")
-        ActiveRecord::Base.establish_connection(@database_url)
         ActiveRecord::Base.connection.execute("SET SESSION innodb_lock_wait_timeout = 1;")
       end
 

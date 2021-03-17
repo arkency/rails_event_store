@@ -5,7 +5,7 @@ require_relative "consumer"
 module RubyEventStore
   module PersistentProjections
     class CLI
-      Options = Struct.new(:database_url, :log_level)
+      Options = Struct.new(:require_file, :log_level)
 
       class Parser
         def self.parse(argv)
@@ -13,8 +13,8 @@ module RubyEventStore
           OptionParser.new do |option_parser|
             option_parser.banner = "Usage: res_projections [options]"
 
-            option_parser.on("--database-url DATABASE_URL", "Database where projections table is stored") do |database_url|
-              options.database_url = database_url
+            option_parser.on("--require REQUIRE", "File to require, ex. ./config/environment.rb") do |require_file|
+              options.require_file = require_file
             end
 
             option_parser.on("--log-level LOG_LEVEL", [:fatal, :error, :warn, :info, :debug], "Logging level, one of: fatal, error, warn, info, debug") do |log_level|
@@ -42,7 +42,7 @@ module RubyEventStore
         logger = Logger.new(STDOUT, level: options.log_level, progname: "RES-Projections #{consumer_uuid}")
         consumer = RubyEventStore::PersistentProjections::Consumer.new(
           consumer_uuid,
-          options.database_url,
+          options.require_file,
           logger: logger,
         )
       end
