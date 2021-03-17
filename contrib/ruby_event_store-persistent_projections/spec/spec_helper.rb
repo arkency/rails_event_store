@@ -15,7 +15,7 @@ end
 $verbose = ENV.has_key?('VERBOSE') ? true : false
 ActiveRecord::Schema.verbose = $verbose
 
-ENV['DATABASE_URL'] ||= 'sqlite3::memory:'
+ENV['DATABASE_URL'] ||= "mysql2://root:secret@127.0.0.1/rails_event_store"
 
 class TickingClock
   def initialize(start: Time.now.utc, tick_by: 1)
