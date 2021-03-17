@@ -26,6 +26,17 @@ module RubyEventStore
         expect(global_status.position).to eq(1)
       end
 
+      specify 'global thread progresses the state if event locked' do
+        publish_event
+        consumer = Consumer.new(SecureRandom.uuid, nil, logger: logger)
+        expect(consumer).to receive(:check_event_on_position).with(1).and_raise(ActiveRecord::LockWaitTimeout)
+
+        result = consumer.one_loop
+
+        expect(result).to be(true)
+        expect(global_status.position).to eq(0)
+      end
+
       def publish_event
         Event.create!(event_id: SecureRandom.uuid, event_type: "Foo", data: {})
       end

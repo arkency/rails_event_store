@@ -56,18 +56,25 @@ module RubyEventStore
         return false if last_id == current_status.position
         next_position = current_status.position + 1
         begin
-          Event.transaction do
-            ProjectionStatus.connection.execute("SELECT id FROM event_store_events WHERE id = #{next_position} FOR UPDATE")
-          end
-          ProjectionStatus.connection.execute("UPDATE event_store_projections SET position = GREATEST(#{next_position}, position) WHERE name = '#{GLOBAL_POSITION_NAME}'")
-          logger.debug "Progressed to at least #{next_position}"
+          check_event_on_position(next_position)
+          bump_position_to_at_least(next_position)
         rescue ActiveRecord::RecordNotFound
-          ProjectionStatus.connection.execute("UPDATE event_store_projections SET position = GREATEST(#{next_position}, position) WHERE name = '#{GLOBAL_POSITION_NAME}'")
-          logger.debug "Progressed to at least #{next_position}"
+          bump_position_to_at_least(next_position)
         rescue ActiveRecord::LockWaitTimeout
           logger.debug "Lock wait timeout"
         end
         true
+      end
+
+      def check_event_on_position(position)
+        Event.transaction do
+          ProjectionStatus.connection.execute("SELECT id FROM event_store_events WHERE id = #{position} FOR UPDATE")
+        end
+      end
+
+      def bump_position_to_at_least(new_position)
+        ProjectionStatus.connection.execute("UPDATE event_store_projections SET position = GREATEST(#{new_position}, position) WHERE name = '#{GLOBAL_POSITION_NAME}'")
+        logger.debug "Progressed to at least #{new_position}"
       end
 
       private
