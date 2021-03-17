@@ -37,12 +37,31 @@ module RubyEventStore
         expect(global_status.position).to eq(0)
       end
 
+      specify 'global thread progresses the state if event not found' do
+        publish_event_and_rollback
+        publish_event
+        consumer = Consumer.new(SecureRandom.uuid, nil, logger: logger)
+
+        consumer.one_loop
+        result = consumer.one_loop
+
+        expect(result).to be(true)
+        expect(global_status.position).to eq(2)
+      end
+
       def publish_event
         Event.create!(event_id: SecureRandom.uuid, event_type: "Foo", data: {})
       end
 
       def global_status
         ProjectionStatus.find_by(name: Consumer::GLOBAL_POSITION_NAME)
+      end
+
+      def publish_event_and_rollback
+        ActiveRecord::Base.transaction do
+          publish_event
+          raise ActiveRecord::Rollback
+        end
       end
     end
   end
