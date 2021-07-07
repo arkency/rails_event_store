@@ -66,13 +66,46 @@ RSpec.describe AggregateRoot do
     expect { order.apply(spanish_inquisition) }.to raise_error(AggregateRoot::MissingHandler, "Missing handler method apply_spanish_inquisition on aggregate #{order_klass}")
   end
 
+  it "should raise error for missing apply method based on a default apply strategy (explicity stated)" do
+    klass = silence_warnings do
+      Class.new do
+        include AggregateRoot.with_default_apply_strategy
+      end
+    end
+    order = klass.new
+    spanish_inquisition = Orders::Events::SpanishInquisition.new
+    expect { order.apply(spanish_inquisition) }.to raise_error(AggregateRoot::MissingHandler, "Missing handler method apply_spanish_inquisition on aggregate #{klass}")
+  end
+
   it "should ignore missing apply method based on a default non-strict apply strategy" do
-    klass = Class.new do
-      include AggregateRoot.with_strategy(->{ AggregateRoot::DefaultApplyStrategy.new(strict: false) })
+    klass = silence_warnings do
+      Class.new do
+        include AggregateRoot.with_strategy(->{ AggregateRoot::DefaultApplyStrategy.new(strict: false) })
+      end
     end
     order = klass.new
     spanish_inquisition = Orders::Events::SpanishInquisition.new
     expect { order.apply(spanish_inquisition) }.to_not raise_error
+  end
+
+  it "include with_strategy should warn about depracations" do
+    expect{
+      Class.new do
+        include AggregateRoot.with_strategy(->{ AggregateRoot::DefaultApplyStrategy.new(strict: false) })
+      end
+    }.to output(<<~EOW).to_stderr
+      Please replace include AggregateRoot.with_strategy(...) with include AggregateRoot.with(strategy: ...)
+    EOW
+  end
+
+  it "include with_default_apply_strategy should warn about depracations" do
+    expect {
+      Class.new do
+        include AggregateRoot.with_default_apply_strategy
+      end
+    }.to output(<<~EOW).to_stderr
+      Please replace include AggregateRoot.with_default_apply_strategy with include AggregateRoot
+    EOW
   end
 
   it "should receive a method call based on a custom strategy" do
@@ -84,23 +117,25 @@ RSpec.describe AggregateRoot do
         }.fetch(event.event_type, ->(ev) {}).call(event)
       end
     end
-    klass = Class.new do
-      include AggregateRoot.with_strategy(strategy)
+    klass = silence_warnings do
+      Class.new do
+        include AggregateRoot.with_strategy(strategy)
 
-      def initialize
-        @status = :draft
-      end
+        def initialize
+          @status = :draft
+        end
 
-      attr_accessor :status
+        attr_accessor :status
 
-      private
+        private
 
-      def custom_created(_event)
-        @status = :created
-      end
+        def custom_created(_event)
+          @status = :created
+        end
 
-      def custom_expired(_event)
-        @status = :expired
+        def custom_expired(_event)
+          @status = :expired
+        end
       end
     end
     order = klass.new
