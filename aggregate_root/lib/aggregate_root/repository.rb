@@ -15,8 +15,8 @@ module AggregateRoot
     def store(aggregate, stream_name)
       event_store.publish(aggregate.unpublished_events.to_a,
         stream_name:      stream_name,
-        expected_version: aggregate.version)
-      aggregate.version = aggregate.version + aggregate.unpublished_events.count
+        expected_version: aggregate.version,
+        after_store_callback: ->() { aggregate.version = aggregate.version + aggregate.unpublished_events.count })
     end
 
     def with_aggregate(aggregate, stream_name, &block)

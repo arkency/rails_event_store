@@ -75,6 +75,14 @@ module RubyEventStore
       expect(client.read.stream(stream).to_a).to eq([first_event, second_event])
     end
 
+    specify 'publishing calls after_store_callback if provided' do
+      some_var = 42
+
+      client.publish(TestEvent.new, after_store_callback: ->() { some_var = 13 })
+
+      expect(some_var).to eq(13)
+    end
+
     specify 'append many events' do
       client = RubyEventStore::Client.new(
         repository: InMemoryRepository.new,
