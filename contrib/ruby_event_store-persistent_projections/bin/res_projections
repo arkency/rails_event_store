@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+
+require "ruby_event_store/persistent_projections/cli"
+
+cli = RubyEventStore::PersistentProjections::CLI.new
+cli.run(ARGV)

@@ -1,0 +1,12 @@
+source 'https://rubygems.org'
+gemspec
+
+eval_gemfile '../../support/bundler/Gemfile.shared'
+
+
+gem 'ruby_event_store', path: '../../ruby_event_store'
+gem 'pg', '1.2.2'
+gem 'mysql2', '0.5.3'
+gem 'childprocess'
+gem 'rails', '6.1.0'
+gem 'sqlite3', '1.4.2'
