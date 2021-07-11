@@ -12,7 +12,7 @@ module RubyEventStore
     end
 
     def add_subscription(subscriber, event_types)
-      local.add(subscriber, resolve_event_types(event_types))
+      local.add(subscriber, event_types)
     end
 
     def add_global_subscription(subscriber)
@@ -20,7 +20,7 @@ module RubyEventStore
     end
 
     def add_thread_subscription(subscriber, event_types)
-      thread.local.add(subscriber, resolve_event_types(event_types))
+      thread.local.add(subscriber, event_types)
     end
 
     def add_thread_global_subscription(subscriber)
@@ -38,14 +38,6 @@ module RubyEventStore
 
     def default_event_type_resolver
       ->(value) { value.to_s }
-    end
-
-    def resolve_event_types(event_types)
-      event_types.map(&method(:resolve_event_type))
-    end
-
-    def resolve_event_type(type)
-      event_type_resolver.call(type)
     end
 
     class ThreadSubscriptions
