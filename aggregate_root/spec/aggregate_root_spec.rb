@@ -27,12 +27,14 @@ RSpec.describe AggregateRoot do
 
       private
 
-      def apply_order_created(_event)
-        @status = :created
+      on Orders::Events::OrderCreated do |event|
+        @status     = :created
+        @created_at =  event.valid_at
       end
 
-      def apply_order_expired(_event)
-        @status = :expired
+      on Orders::Events::OrderExpired do |event|
+        @status     = :expired
+        @expired_at =  event.valid_at
       end
     end
   end
@@ -40,9 +42,8 @@ RSpec.describe AggregateRoot do
   it "should have ability to apply event on itself" do
     order = order_klass.new(uuid)
     order_created = Orders::Events::OrderCreated.new
-
-    expect(order).to receive(:"apply_order_created").with(order_created).and_call_original
     order.apply(order_created)
+
     expect(order.status).to eq :created
     expect(order.unpublished_events.to_a).to eq([order_created])
   end
@@ -52,18 +53,18 @@ RSpec.describe AggregateRoot do
     expect(order.unpublished_events.to_a).to be_empty
   end
 
+  it "should raise error for missing apply method based on a default apply strategy" do
+    order = order_klass.new(uuid)
+    spanish_inquisition = Orders::Events::SpanishInquisition.new
+    expect { order.apply(spanish_inquisition) }.to raise_error(AggregateRoot::MissingHandler, "Missing handler method on aggregate #{order_klass} for Orders::Events::SpanishInquisition")
+  end
+
   it "should receive a method call based on a default apply strategy" do
     order = order_klass.new(uuid)
     order_created = Orders::Events::OrderCreated.new
 
     order.apply(order_created)
     expect(order.status).to eq :created
-  end
-
-  it "should raise error for missing apply method based on a default apply strategy" do
-    order = order_klass.new(uuid)
-    spanish_inquisition = Orders::Events::SpanishInquisition.new
-    expect { order.apply(spanish_inquisition) }.to raise_error(AggregateRoot::MissingHandler, "Missing handler method apply_spanish_inquisition on aggregate #{order_klass}")
   end
 
   it "should ignore missing apply method based on a default non-strict apply strategy" do

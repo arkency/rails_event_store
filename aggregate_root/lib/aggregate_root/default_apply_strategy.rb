@@ -2,6 +2,7 @@
 
 module AggregateRoot
   MissingHandler = Class.new(StandardError)
+  NullHandler    = Proc.new {}
 
   class DefaultApplyStrategy
     def initialize(strict: true)
@@ -9,32 +10,26 @@ module AggregateRoot
     end
 
     def call(aggregate, event)
-      name = handler_name(aggregate, event)
-      if aggregate.respond_to?(name, true)
-        aggregate.method(name).call(event)
-      else
-        raise MissingHandler.new("Missing handler method #{name} on aggregate #{aggregate.class}") if strict
-      end
+      on_handler(aggregate, event.event_type)[event]
     end
 
     private
 
-    def handler_name(aggregate, event)
-      on_dsl_handler_name(aggregate, event.event_type) || apply_handler_name(event.event_type)
+    def on_handler(aggregate, event_type)
+      on_method_name = aggregate.class.on_methods.fetch(event_type)
+      aggregate.method(on_method_name)
+    rescue KeyError
+      missing_handler(aggregate, event_type)
     end
 
-    def on_dsl_handler_name(aggregate, event_type)
-      aggregate.class.on_methods[event_type] if aggregate.class.respond_to?(:on_methods)
+    def missing_handler(aggregate, event_type)
+      if strict
+        raise MissingHandler.new("Missing handler method on aggregate #{aggregate.class} for #{event_type}")
+      else
+        NullHandler
+      end
     end
 
-    def apply_handler_name(event_type)
-      "apply_#{Transform.to_snake_case(event_type(event_type))}"
-    end
-
-    def event_type(event_type)
-      event_type.split(%r{::|\.}).last
-    end
-
-    attr_reader :strict, :on_methods
+    attr_reader :strict
   end
 end
