@@ -717,10 +717,9 @@ module RubyEventStore
 
     it '#position_in_stream when event is published without position' do
       skip unless helper.supports_position_queries?
-      repository.append_to_stream([event0 = SRecord.new], stream, version_auto)
-      repository.append_to_stream([event1 = SRecord.new], stream, version_any)
+      repository.append_to_stream([event0 = SRecord.new], stream, version_any)
 
-      expect(repository.position_in_stream(event1.event_id, stream)).to eq(nil)
+      expect(repository.position_in_stream(event0.event_id, stream)).to eq(nil)
     end
 
     it '#global_position happy path' do
