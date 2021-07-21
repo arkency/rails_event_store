@@ -173,7 +173,12 @@ module RubyEventStore
     end
 
     def last_stream_version(stream)
-      event_ids_of_stream(stream).size - 1
+      events_in_stream = streams.fetch(stream.name, Array.new)
+      if events_in_stream.empty?
+        ExpectedVersion::POSITION_DEFAULT
+      else
+        events_in_stream.last.position
+      end
     end
 
     def with_synchronize(expected_version, stream, &block)
