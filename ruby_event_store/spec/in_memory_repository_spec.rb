@@ -82,5 +82,17 @@ module RubyEventStore
         ], stream, version_any)
       end.to raise_error(RubyEventStore::InMemoryRepository::UnsupportedVersionAnyUsage)
     end
+
+    it 'publishing with specific position to stream with any position raise an error' do
+      repository.append_to_stream([
+        event0 = SRecord.new,
+      ], stream, version_any)
+
+      expect do
+        repository.append_to_stream([
+          event1 = SRecord.new,
+        ], stream, version_auto)
+      end.to raise_error(RubyEventStore::InMemoryRepository::UnsupportedVersionAnyUsage)
+    end
   end
 end
