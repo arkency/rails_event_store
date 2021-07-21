@@ -3,6 +3,8 @@
 require 'ostruct'
 module RubyEventStore
   class InMemoryRepository
+    UnsupportedVersionAnyUsage = Class.new(StandardError)
+
     class EventInStream
       def initialize(event_id, position)
         @event_id = event_id
@@ -34,6 +36,8 @@ module RubyEventStore
       serialized_records = records.map { |record| record.serialize(serializer) }
 
       with_synchronize(expected_version, stream) do |resolved_version|
+        raise UnsupportedVersionAnyUsage if resolved_version.nil? && !streams.fetch(stream.name, Array.new).map(&:position).compact.empty?
+        raise UnsupportedVersionAnyUsage if !resolved_version.nil? && streams.fetch(stream.name, Array.new).map(&:position).include?(nil)
         raise WrongExpectedEventVersion unless resolved_version.nil? || last_stream_version(stream).equal?(resolved_version)
 
         serialized_records.each_with_index do |serialized_record, index|
@@ -173,7 +177,12 @@ module RubyEventStore
     end
 
     def last_stream_version(stream)
-      event_ids_of_stream(stream).size - 1
+      events_in_stream = streams.fetch(stream.name, Array.new)
+      if events_in_stream.empty?
+        ExpectedVersion::POSITION_DEFAULT
+      else
+        events_in_stream.last.position
+      end
     end
 
     def with_synchronize(expected_version, stream, &block)
