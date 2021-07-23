@@ -7,7 +7,7 @@
   "license": "MIT",
   "devDependencies": {
     "@fullhuman/postcss-purgecss": "3.0.0",
-    "@tailwindcss/postcss7-compat": "^2.2.4",
+    "@tailwindcss/postcss7-compat": "^2.2.7",
     "autoprefixer": "^9",
     "elm": "^0.19.1-5",
     "elm-format": "^0.8.5",
